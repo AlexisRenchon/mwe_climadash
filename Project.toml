@@ -1,0 +1,4 @@
+[deps]
+Bonito = "824d6782-a2ef-11e9-3a09-e5662e0c26f8"
+ClimaAnalysis = "29b5916a-a76c-4e73-9657-3c8fd22e65e6"
+WGLMakie = "276b4fcb-3e11-5398-bf8b-a0c2d153d008"
