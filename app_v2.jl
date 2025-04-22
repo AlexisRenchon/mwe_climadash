@@ -1,5 +1,6 @@
 using Bonito
 using WGLMakie
+import GeoMakie as GM
 using ClimaAnalysis
 
 ### 1. Dashboard, heatmap of lhf or gpp on land, slider for t ###
@@ -8,31 +9,26 @@ using ClimaAnalysis
 simdir = SimDir("outdir")
 lhf = get(simdir, "lhf")
 gpp = get(simdir, "gpp")
-
-# Create figure
-fig = Figure() # outside of function, created once only
-ax = Axis(fig[1,1]) # likewise
+lon = gpp.dims["lon"]
+lat = gpp.dims["lat"]
 
 function lhf_land(slider, menu, fig, ax)
     s = slider.value
     m = menu.value
     var = @lift(Dict("lhf" => lhf, "gpp" => gpp)[$m])
-    # Get lhf at first timestep
-    varslice = @lift(slice($var, time = $var.dims["time"][$s]))
-    # Apply oceanmask
-    slice_land = @lift(apply_oceanmask($varslice))
-    # Get data
-    slice_land_data = @lift($slice_land.data)
-    # Plot.
-    p = contourf!(ax, slice_land_data)
+    varslice = @lift(slice($var, time = $var.dims["time"][$s])) # Get lhf
+    slice_land = @lift(apply_oceanmask($varslice)) # Apply oceanmask
+    slice_land_data = @lift($slice_land.data) # Get data
+    p = heatmap!(ax, lon, lat, slice_land_data) # Plot
     return fig
 end
 
 app = App() do
+    fig = Figure()
+    ax = GM.GeoAxis(fig[1,1]; dest = "+proj=wintri")
+    lines!(ax, GM.coastlines())
     menu = Dropdown(["lhf", "gpp"])
     slider = StylableSlider(1:12)
     landmap = lhf_land(slider, menu, fig, ax)
     return DOM.div(slider, menu, landmap)
 end
-
-
