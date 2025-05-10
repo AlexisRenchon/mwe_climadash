@@ -1,5 +1,6 @@
 # Possible TODO:
 # Add Solar radiation down as a shading to have night as a shade
+# Add a play button that advance slider and rotate earth
 
 using Bonito
 using WGLMakie
@@ -73,7 +74,7 @@ function lhf_land(slider, menu, fig, ax)
 end
 
 app = App() do
-    fig = Figure(size=(1500, 1200))  # Made figure larger
+    fig = Figure(size=(1500, 1200), backgroundcolor = :black)  # Made figure larger
 
     # Create a 3D axis - adjusted viewing angles
     ax = Axis3(fig[1, 1],
@@ -82,7 +83,8 @@ app = App() do
 #               elevation=0.35π,
                perspectiveness=0.0,  # Use orthographic projection (0.0) instead of perspective
                protrusions=0,        # Remove padding
-               viewmode=:fit)        # Fit the view to the data
+               viewmode=:fit,
+              backgroundcolor = :black)        # Fit the view to the data
 
     # Hide the axis decorations for a cleaner look
     hidedecorations!(ax)
